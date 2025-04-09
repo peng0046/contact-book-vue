@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { contactData } from "../data";  
+import { contactData } from "../data";
 import { useRouter } from "vue-router";
 
 const searchTerm = ref("");
@@ -24,7 +24,12 @@ const goToAddContact = () => {
 <template>
   <div class="container">
     <h1>Contact Book</h1>
-    <input v-model="searchTerm" type="text" placeholder="Search by name..." class="search-input" />
+    <input
+      v-model="searchTerm"
+      type="text"
+      placeholder="Search by name..."
+      class="search-input"
+    />
     <button @click="goToAddContact">Add Contact</button>
     <ul>
       <li v-for="contact in filteredContacts" :key="contact.id">

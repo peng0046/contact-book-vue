@@ -1,51 +1,72 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { contactData, saveContactData } from '../data';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { contactData, saveContactData } from "../data";
 
-const firstName = ref('');
-const lastName = ref('');
-const email = ref('');
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
 const router = useRouter();
 
 const addContact = () => {
-  const newContact = {
-    id: Date.now(),  
-    firstName: firstName.value,
-    lastName: lastName.value,
-    email: email.value
-  };
+  if (firstName.value !== "" && lastName.value !== "" && email.value !== "") {
+    const newContact = {
+      id: Date.now(),
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+    };
 
-  // 更新内存中的联系人数据
-  contactData.value.push(newContact);
+    // Update in-memory contact data
+    contactData.value.push(newContact);
 
-  // 保存更新后的联系人数据到 localStorage
-  saveContactData();
+    // Save the updated contact data to localStorage
+    saveContactData();
 
-  // 跳转到首页
-  router.push('/');
+    // Navigate back to the home page
+    router.push("/");
+  } else {
+    alert("Please complete the form.");
+  }
 };
 
 const goBack = () => {
-  router.push('/');
+  router.push("/");
 };
 </script>
 
 <template>
   <div class="container">
-    <button type="button" @click="goBack" class="back-button">Back to Contact Book</button>
+    <button type="button" @click="goBack" class="back-button">
+      Back to Contact Book
+    </button>
     <h2>Add Contact</h2>
 
     <div>
-      <input v-model="firstName" type="text" placeholder="Please enter your First Name" required />
+      <input
+        v-model="firstName"
+        type="text"
+        placeholder="Please enter your First Name"
+        required
+      />
     </div>
 
     <div>
-      <input v-model="lastName" type="text" placeholder="Please enter your Last Name" required />
+      <input
+        v-model="lastName"
+        type="text"
+        placeholder="Please enter your Last Name"
+        required
+      />
     </div>
 
     <div>
-      <input v-model="email" type="email" placeholder="Please enter your Email Address" required />
+      <input
+        v-model="email"
+        type="email"
+        placeholder="Please enter your Email Address"
+        required
+      />
     </div>
 
     <button @click="addContact" type="button">Add Contact</button>

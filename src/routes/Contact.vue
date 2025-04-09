@@ -1,70 +1,93 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { contactData, loadContactData, saveContactData } from '../data'; 
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { contactData, loadContactData, saveContactData } from "../data";
 
 const route = useRoute();
 const router = useRouter();
 const contact = ref(null);
-const isEditing = ref(false); // 控制是否在编辑模式
+const isEditing = ref(false);
 
-// 根据路由参数加载联系人数据
+// Load contact data based on route parameter
 onMounted(() => {
-  loadContactData(); // 从 localStorage 加载数据
+  loadContactData(); // Load data from localStorage
   const contactId = parseInt(route.params.id);
   contact.value = contactData.value.find((contact) => contact.id === contactId);
 });
 
-// 更新联系人信息
+// Update contact information
 const updateContact = () => {
-  const contactIndex = contactData.value.findIndex(c => c.id === contact.value.id);
+  const contactIndex = contactData.value.findIndex(
+    (c) => c.id === contact.value.id
+  );
   if (contactIndex !== -1) {
-    contactData.value[contactIndex] = { ...contact.value }; // 更新联系人信息
-    saveContactData(); // 将更新后的数据保存到 localStorage
-    isEditing.value = false; // 退出编辑模式
+    contactData.value[contactIndex] = { ...contact.value }; // Update contact information
+    saveContactData(); // Save updated data to localStorage
+    isEditing.value = false; // Exit edit mode
   }
 };
 
-// 删除联系人
+// Delete contact
 const deleteContact = () => {
-  const contactIndex = contactData.value.findIndex(c => c.id === contact.value.id);
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this contact?"
+  );
+  if (!confirmed) return;
+
+  const contactIndex = contactData.value.findIndex(
+    (c) => c.id === contact.value.id
+  );
   if (contactIndex !== -1) {
-    contactData.value.splice(contactIndex, 1); // 删除联系人
-    saveContactData(); // 更新 localStorage
-    router.push('/'); // 删除后跳转回联系人列表页
+    contactData.value.splice(contactIndex, 1); // Delete contact
+    saveContactData(); // Update localStorage
+    router.push("/"); // Navigate back to contact list after deletion
   }
 };
 
-// 返回按钮
+// Go back button
 const goBack = () => {
-  router.push('/');
+  router.push("/");
 };
 </script>
 
 <template>
   <div class="container">
-    <button type="button" @click="goBack" class="back-button">Back to Contact Book</button>
+    <button type="button" @click="goBack" class="back-button">
+      Back to Contact Book
+    </button>
     <h1>Contact Details</h1>
 
-    <!-- 显示联系人信息 -->
+    <!-- Display contact information -->
     <div v-if="contact">
       <div v-if="!isEditing">
-        <p><strong>Name:</strong> {{ contact.firstName }} {{ contact.lastName }}</p>
+        <p>
+          <strong>Name:</strong> {{ contact.firstName }} {{ contact.lastName }}
+        </p>
         <p><strong>Email:</strong> {{ contact.email }}</p>
         <button @click="isEditing = true" class="edit-button">Edit</button>
         <button @click="deleteContact" class="delete-button">Delete</button>
       </div>
 
-      <!-- 编辑联系人信息表单 -->
+      <!-- Edit contact form -->
       <div v-else>
         <form @submit.prevent="updateContact" class="edit-form">
           <div>
             <label for="firstName">First Name</label>
-            <input v-model="contact.firstName" id="firstName" type="text" required />
+            <input
+              v-model="contact.firstName"
+              id="firstName"
+              type="text"
+              required
+            />
           </div>
           <div>
             <label for="lastName">Last Name</label>
-            <input v-model="contact.lastName" id="lastName" type="text" required />
+            <input
+              v-model="contact.lastName"
+              id="lastName"
+              type="text"
+              required
+            />
           </div>
           <div>
             <label for="email">Email</label>
@@ -72,7 +95,13 @@ const goBack = () => {
           </div>
           <div class="form-buttons">
             <button type="submit" class="save-button">Save Changes</button>
-            <button type="button" @click="isEditing = false" class="cancel-button">Cancel</button>
+            <button
+              type="button"
+              @click="isEditing = false"
+              class="cancel-button"
+            >
+              Cancel
+            </button>
           </div>
         </form>
       </div>
@@ -119,20 +148,20 @@ button:hover {
 }
 
 .delete-button {
-    background: #dc3545;
-    color: white;
+  background: #dc3545;
+  color: white;
 }
 
 .delete-button:hover {
-    background: #c82333;
+  background: #c82333;
 }
 
 .cancel-button {
-    background: #ccc;
-    color: black;
+  background: #ccc;
+  color: black;
 }
 
 .cancel-button:hover {
-    background: #aaa;
+  background: #aaa;
 }
 </style>
